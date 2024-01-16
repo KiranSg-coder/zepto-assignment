@@ -8,6 +8,30 @@ function App() {
   const [nameLists, setNameLists] = useState([]);
   const [chipLists, setChipLists] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const [highlighted, setHighlighted] = useState(null);
+  const [backspacePressed, setBackspacePressed] = useState(false);
+
+  const removeLastChip = () => {
+    const lastChip = chipLists[chipLists.length - 1];
+    if (lastChip) {
+      setChipLists((prevChips) => prevChips.slice(0, -1));
+      setNameLists((prevNames) => [...prevNames, lastChip]);
+    }
+  };
+
+  const handleInputKeyDown = (event) => {
+    if (event.key === "Backspace" && inputValue === "") {
+      if (highlighted === null) {
+        setHighlighted(chipLists[chipLists.length - 1]);
+        setBackspacePressed(true);
+        event.preventDefault();
+      } else {
+        removeLastChip();
+        setHighlighted(null);
+        setBackspacePressed(false);
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,6 +61,10 @@ function App() {
         setChipLists,
         inputValue,
         setInputValue,
+        removeLastChip,
+        highlighted,
+        setHighlighted,
+        backspacePressed,
       }}
     >
       <div className="flex flex-col items-center my-[10%]">

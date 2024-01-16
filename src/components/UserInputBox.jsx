@@ -10,7 +10,24 @@ const UserInputBox = () => {
     chipLists,
     inputValue,
     setInputValue,
+    removeLastChip,
+    highlighted,
+    setHighlighted,
   } = useContext(UserContex);
+
+  const handleInputKeyDown = (event) => {
+    if (event.key === "Backspace" && inputValue === "") {
+      if (highlighted === null) {
+        // If no chip is highlighted, highlight the last chip
+        setHighlighted(chipLists[chipLists.length - 1]);
+        event.preventDefault();
+      } else {
+        // If a chip is highlighted, remove it
+        removeLastChip();
+        setHighlighted(null);
+      }
+    }
+  };
 
   return (
     <div className="border-b-[3px] border-blue-400 py-2 flex items-center">
@@ -27,6 +44,7 @@ const UserInputBox = () => {
           onChange={(e) => {
             setInputValue(e.target.value);
           }}
+          onKeyDown={handleInputKeyDown}
           placeholder="Add new users..."
           className={"bg-neutral-100 w-full focus:outline-none"}
         />
